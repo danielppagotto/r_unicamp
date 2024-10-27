@@ -1,0 +1,138 @@
+---
+title: "Análise de dados do GEM usando R"
+format: html
+editor: visual
+toc: TRUE
+---
+
+## Usando R para explorar dados do GEM
+
+Este código possui algumas seções. A primeira delas será um nivelamento. Em sequência, teremos uma seção sobre a análise exploratória de dados usando o pacote `dplyr` e `ggplot2`. A última seção será para conduzir algumas análises de comparação de grupos.
+
+## Nivelamento de conhecimentos sobre R
+
+### Operações básicas
+
+Como qualquer linguagem de programação, o R executa instruções que são passadas. Vamos introduzir, vendo operações básicas.
+
+```{r}
+
+# operacoes basicas
+5 + 5
+
+10 - 6
+
+10*2
+
+5/2
+
+5**2
+
+sqrt(16)
+
+```
+
+Utilize parênteses para ordenar a lógica de prioridade de operações.
+
+```{r}
+
+5*(50-45)
+
+```
+
+É comum atribuirmos valores às variáveis. Para isso, usamos o símbolo `<-` ou `=`. A atribuição é útil, pois deixa o código mais limpo e fácil de prestar manutenção.
+
+```{r}
+
+#Atribuições
+x <- 5 + 5
+y <- 10 - 16
+a <- 9
+soma <- a + x
+nome <- "daniel"
+certo <- TRUE
+
+```
+
+Uma vez realizada a atribuição, os valores aparecem no painel do canto superior direito do RStudio (em *Environment*).
+
+![](imagens/print1.png){fig-align="center" width="419"}
+
+Você pode resgatar valores atribuídos para realizar cálculos com os valores guardados.
+
+```{r}
+
+# como vimos no codigo acima x = 10 e a = 9
+
+x + a
+
+
+```
+
+Vamos aplicar o que acabamos de aprender para criar uma calculadora de IMC.
+
+```{r}
+
+peso_daniel <- 90
+altura_daniel <- 1.78
+imc_daniel <- peso_daniel/(altura_daniel)**2
+imc_daniel
+
+```
+
+### Trabalhando com vetores
+
+É possível fazer o IMC de vários grupos ao mesmo tempo? Sim, para isso, vamos trabalhar com vetores. O **vetor** é um conjunto unidimensional de objetos de um mesmo tipo.
+
+Traduzindo... imagina uma tabela de excel formada por várias colunas. Uma das colunas é a idade e está expressa em número. Pronto, um vetor é como se fosse uma coluna com valores de um mesmo tipo.
+
+```{r}
+
+# trabalhando com vetores
+pesos <- c(65, 95, 75, 77, 80, 68)
+alturas <- c(1.60, 1.78, 1.80, 1.68, 1.72, 1.65)
+imcs <- pesos/alturas**2
+imcs
+
+```
+
+Vamos arrendondar usando duas casas decimais?
+
+```{r}
+
+imcs <- round(imcs, 2)
+imcs
+
+```
+
+### Trabalhando com matrizes
+
+As **matrizes** possuem uma estrutura tabular, com linhas e colunas. Porém, semelhante ao vetor, todos os objetos devem ser de um mesmo tipo (ex.: tudo número, tudo caracter).
+
+```{r}
+
+Matriz<-cbind(pesos,alturas,imcs)
+Matriz
+```
+
+### Trabalhando com dataframes
+
+O dataframe é um estrutura tabular semelhante à matriz. O maior diferencial dela é que você consegue armazenar valores de diferentes tipos (ex.: numérico, characteres, etc).
+
+```{r}
+
+df <- as.data.frame(Matriz)
+df
+```
+
+## Leitura dos dados
+
+Quem está iniciando o uso de R frequentemente sofre um pouco com a leitura dos dados. Isso é um ponto muito crítico, pois o novo usuário pode se frustrar logo quando está dando os primeiros passos.
+
+Aqui vou tentar explicar como é possível fazer a leitura dos dados sem muitos problemas. Isso abre uma das potencialidades do R: ler dados de múltiplos formatos.
+
+1\) O primeiro passo é localizar onde o seu arquivo está
+
+## Análise exploratória de dados
+
+Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados.
