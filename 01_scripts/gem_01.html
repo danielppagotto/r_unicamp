@@ -88,7 +88,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#trabalhando-com-dataframes" id="toc-trabalhando-com-dataframes" class="nav-link" data-scroll-target="#trabalhando-com-dataframes">Trabalhando com dataframes</a></li>
   </ul></li>
   <li><a href="#leitura-dos-dados" id="toc-leitura-dos-dados" class="nav-link" data-scroll-target="#leitura-dos-dados">Leitura dos dados</a></li>
-  <li><a href="#análise-exploratória-de-dados" id="toc-análise-exploratória-de-dados" class="nav-link" data-scroll-target="#análise-exploratória-de-dados">Análise exploratória de dados</a></li>
+  <li><a href="#análise-exploratória-de-dados" id="toc-análise-exploratória-de-dados" class="nav-link" data-scroll-target="#análise-exploratória-de-dados">Análise exploratória de dados</a>
+  <ul class="collapse">
+  <li><a href="#função-glimpse" id="toc-função-glimpse" class="nav-link" data-scroll-target="#função-glimpse">Função <code>glimpse</code></a></li>
+  <li><a href="#função-select" id="toc-função-select" class="nav-link" data-scroll-target="#função-select">Função <code>select</code></a></li>
+  <li><a href="#função-filter" id="toc-função-filter" class="nav-link" data-scroll-target="#função-filter">Função <code>filter</code></a></li>
+  <li><a href="#função-mutate" id="toc-função-mutate" class="nav-link" data-scroll-target="#função-mutate">Função <code>mutate</code></a></li>
+  <li><a href="#funções-group_by-e-summarise" id="toc-funções-group_by-e-summarise" class="nav-link" data-scroll-target="#funções-group_by-e-summarise">Funções <code>group_by</code> e <code>summarise</code></a></li>
+  </ul></li>
   </ul>
 </nav>
 </div>
@@ -254,11 +261,323 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="leitura-dos-dados">Leitura dos dados</h2>
 <p>Quem está iniciando o uso de R frequentemente sofre um pouco com a leitura dos dados. Isso é um ponto muito crítico, pois o novo usuário pode se frustrar logo quando está dando os primeiros passos.</p>
 <p>Aqui vou tentar explicar como é possível fazer a leitura dos dados sem muitos problemas. Isso abre uma das potencialidades do R: ler dados de múltiplos formatos.</p>
-<p>1) O primeiro passo é localizar onde o seu arquivo está</p>
+<p>1) O primeiro passo é localizar onde o seu arquivo está. <u>Sugiro, fortemente, que deixe o arquivo em alguma pasta de trabalho com todos os arquivos que você vai usar.</u></p>
+<p>Uma boa forma de você localizar onde está o arquivo é usando os três pontinhos conforme print abaixo.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="imagens/print2.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="582"></p>
+</figure>
+</div>
+<p>2) Uma nova janela será aberta. Basta você navegar para achar a pasta onde seu arquivo está localizado. Eu guardei nesta pasta chamada 02_dados.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/clipboard-3574103888.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="513"></p>
+</figure>
+</div>
+<p>3) O próximo passo consiste em selecionar a opção “Import Dataset…” conforme o print abaixo.</p>
+<p><img src="images/clipboard-3267730657.png" class="img-fluid"></p>
+<p>4) Será aberta uma tela assistente que mostra uma prévia de como os resultados vão aparecer.</p>
+<p><img src="imagens/print3.png" class="img-fluid"></p>
+<p>Dica de boa prática: copie o código gerado (marcado em vermelho acima), pois na próxima vez que rodar o script não precisa executar todo este passo a passo, basta executar o comando.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(readxl)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>GEM_APS <span class="ot">&lt;-</span> <span class="fu">read_excel</span>(<span class="st">"~/GitHub/r_unicamp/02_dados/GEM_APS.xlsx"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="análise-exploratória-de-dados" class="level2">
 <h2 class="anchored" data-anchor-id="análise-exploratória-de-dados">Análise exploratória de dados</h2>
-<p>Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados.</p>
+<p>Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados. Antes de começar, assegure que o tidyverse esteja instalado e também carregue o pacote.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># instalando o pacote </span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="co"># install.packages("tidyverse")</span></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># carregando pacote</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="função-glimpse" class="level3">
+<h3 class="anchored" data-anchor-id="função-glimpse">Função <code>glimpse</code></h3>
+<p>Glimpse em inglês significa “vislumbre”, “olhada rápida”, “olhadinha”. Esta função ajuda a você conferir rapidamente alguns detalhes sobre o dataframe.</p>
+<p>Pelos resultados, é possível ver o número de linhas (1128), colunas (18), os tipos de variáveis e as primeiras observações.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glimpse</span>(GEM_APS)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Rows: 1,128
+Columns: 18
+$ code                                      &lt;dbl&gt; 1, 27, 30, 31, 33, 34, 36, 3…
+$ economy                                   &lt;chr&gt; "United States", "South Afri…
+$ year                                      &lt;dbl&gt; 2023, 2023, 2023, 2023, 2023…
+$ perceived_opportunities                   &lt;chr&gt; "53.81", "64.10", "45.29", "…
+$ perceived_capabilities                    &lt;chr&gt; "48.99", "69.21", "53.76", "…
+$ fear_failure_rate                         &lt;chr&gt; "44.55", "59.51", "53.16", "…
+$ entrepreneurial_intentions                &lt;chr&gt; "12.09", "7.45", "9.10", "16…
+$ tea                                       &lt;chr&gt; "14.71", "11.11", "6.74", "1…
+$ established_business_ownership            &lt;chr&gt; "6.74", "5.92", "14.70", "6.…
+$ entrepreneurial_employee_activity         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, …
+$ motivational_index                        &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, …
+$ female_male_TEA                           &lt;chr&gt; "0.84", "0.76", "0.79", "0.8…
+$ female_male_opportunity_TEA               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, …
+$ high_job_creation_expectation             &lt;chr&gt; "28.80", "21.42", "12.12", "…
+$ innovation                                &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, …
+$ business_services_sector                  &lt;chr&gt; "20.42", "3.57", "22.53", "2…
+$ high_status_successful_entrepreneurs      &lt;chr&gt; "78.94", "85.51", "69.76", N…
+$ entrepreneurship_as_good_carrer_of_choice &lt;chr&gt; "79.21", "78.46", "72.90", N…</code></pre>
+</div>
+</div>
+</section>
+<section id="função-select" class="level3">
+<h3 class="anchored" data-anchor-id="função-select">Função <code>select</code></h3>
+<p>Esta função permite você <strong>selecionar apenas as variáveis</strong> <strong>(colunas) que são do seu interesse no dataframe</strong>.</p>
+<p>No código abaixo, vamos selecionar apenas as variáveis com o nome do país, o ano e a variável <em>Total early-stage entrepreneurial activity</em> (TEA). Em sequência, vamos guardar o resultado da seleção em um novo objeto.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># selecionando apenas as variveis pais, ano, tea</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>GEM_APS_select <span class="ot">&lt;-</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(economy, year, tea)</span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a><span class="co"># a funcao head() imprime apenas as seis primeiras observacoes</span></span>
+<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>GEM_APS_select <span class="sc">|&gt;</span> </span>
+<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 3
+  economy        year tea  
+  &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;
+1 United States  2023 14.71
+2 South Africa   2023 11.11
+3 Greece         2023 6.74 
+4 Netherlands    2023 13.69
+5 France         2023 10.75
+6 Spain          2023 6.79 </code></pre>
+</div>
+</div>
+<div class="line-block">OBS.: O objeto <code>|&gt;</code> se chama pipe. Ele é um elemento muito comum na estrutura do tidyverse. O que ele significa? Ele é artifício para encadear funções no R. Com o passar do seu uso ficará mais claro. O <strong>atalho</strong> para o pipe é <strong>Ctrl + Shift + M</strong>.</div>
+</section>
+<section id="função-filter" class="level3">
+<h3 class="anchored" data-anchor-id="função-filter">Função <code>filter</code></h3>
+<p>Esta função serve para <strong>filtrar apenas observações (linhas) de acordo com um critério</strong>.</p>
+<p>Vamos supor que eu queira pegar apenas as observações do Brasil.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(economy <span class="sc">==</span> <span class="st">'Brazil'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 18
+    code economy  year perceived_opportunities perceived_capabilities
+   &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;                   &lt;chr&gt;                 
+ 1    55 Brazil   2023 65.37                   65.89                 
+ 2    55 Brazil   2022 67.87                   69.16                 
+ 3    55 Brazil   2021 54.80                   66.72                 
+ 4    55 Brazil   2020 57.30                   67.80                 
+ 5    55 Brazil   2019 46.37                   61.99                 
+ 6    55 Brazil   2018 31.43                   54.27                 
+ 7    55 Brazil   2017 46.42                   55.89                 
+ 8    55 Brazil   2016 40.23                   53.57                 
+ 9    55 Brazil   2015 42.38                   58.27                 
+10    55 Brazil   2014 55.54                   49.96                 
+# ℹ 13 more rows
+# ℹ 13 more variables: fear_failure_rate &lt;chr&gt;,
+#   entrepreneurial_intentions &lt;chr&gt;, tea &lt;chr&gt;,
+#   established_business_ownership &lt;chr&gt;,
+#   entrepreneurial_employee_activity &lt;chr&gt;, motivational_index &lt;chr&gt;,
+#   female_male_TEA &lt;chr&gt;, female_male_opportunity_TEA &lt;chr&gt;,
+#   high_job_creation_expectation &lt;chr&gt;, innovation &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>Vamos supor que eu queira pegar observações do Brasil ou Argentina. Para isso, vamos usar o conector ou (simbolizado por <code>|</code>). Vou aproveitar e colocar para ordenar pela coluna ano (year) usando a função <code>arrange</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(economy <span class="sc">==</span> <span class="st">'Brazil'</span> <span class="sc">|</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>         economy <span class="sc">==</span> <span class="st">'Argentina'</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">arrange</span>(year)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 41 × 18
+    code economy    year perceived_opportunities perceived_capabilities
+   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;                   &lt;chr&gt;                 
+ 1    54 Argentina  2001 19.83                   54.80                 
+ 2    55 Brazil     2001 40.60                   54.28                 
+ 3    54 Argentina  2002 20.67                   66.83                 
+ 4    55 Brazil     2002 41.42                   54.97                 
+ 5    54 Argentina  2003 65.10                   62.83                 
+ 6    55 Brazil     2003 41.43                   50.83                 
+ 7    54 Argentina  2004 56.64                   58.58                 
+ 8    55 Brazil     2004 43.84                   55.66                 
+ 9    54 Argentina  2005 57.51                   55.12                 
+10    55 Brazil     2005 42.71                   50.23                 
+# ℹ 31 more rows
+# ℹ 13 more variables: fear_failure_rate &lt;chr&gt;,
+#   entrepreneurial_intentions &lt;chr&gt;, tea &lt;chr&gt;,
+#   established_business_ownership &lt;chr&gt;,
+#   entrepreneurial_employee_activity &lt;chr&gt;, motivational_index &lt;chr&gt;,
+#   female_male_TEA &lt;chr&gt;, female_male_opportunity_TEA &lt;chr&gt;,
+#   high_job_creation_expectation &lt;chr&gt;, innovation &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<div class="line-block">Viu como o pipe funciona? Eu fiz uma operação primeiro (filtro) e depois consegui encadear com outra função (arrange).</div>
+<p>Vamos supor que eu queira agora pegar os dados de Brasil e Argentina, mas eu queira pegar apenas observações 2010 adiante. Agora vamos ter que usar também o conector and’, simbolizado por <code>&amp;</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>((economy <span class="sc">==</span> <span class="st">'Brazil'</span> <span class="sc">|</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>         economy <span class="sc">==</span> <span class="st">'Argentina'</span>) <span class="sc">&amp;</span> year <span class="sc">&gt;=</span> <span class="dv">2010</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 23 × 18
+    code economy    year perceived_opportunities perceived_capabilities
+   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;chr&gt;                   &lt;chr&gt;                 
+ 1    55 Brazil     2023 65.37                   65.89                 
+ 2    55 Brazil     2022 67.87                   69.16                 
+ 3    55 Brazil     2021 54.80                   66.72                 
+ 4    55 Brazil     2020 57.30                   67.80                 
+ 5    55 Brazil     2019 46.37                   61.99                 
+ 6    54 Argentina  2018 35.89                   48.79                 
+ 7    55 Brazil     2018 31.43                   54.27                 
+ 8    54 Argentina  2017 29.65                   43.08                 
+ 9    55 Brazil     2017 46.42                   55.89                 
+10    54 Argentina  2016 44.29                   61.16                 
+# ℹ 13 more rows
+# ℹ 13 more variables: fear_failure_rate &lt;chr&gt;,
+#   entrepreneurial_intentions &lt;chr&gt;, tea &lt;chr&gt;,
+#   established_business_ownership &lt;chr&gt;,
+#   entrepreneurial_employee_activity &lt;chr&gt;, motivational_index &lt;chr&gt;,
+#   female_male_TEA &lt;chr&gt;, female_male_opportunity_TEA &lt;chr&gt;,
+#   high_job_creation_expectation &lt;chr&gt;, innovation &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+</section>
+<section id="função-mutate" class="level3">
+<h3 class="anchored" data-anchor-id="função-mutate">Função <code>mutate</code></h3>
+<p>A função <code>mutate</code> é útil para a criação de variáveis. Vamos fazer um exercício com a variável <code>female_male_TEA</code>, multiplicando-a por 100 para deixar na lógica percentual.</p>
+<div class="line-block">A variável female_male_TEA indica o quanto que o empreendedorismo por mulheres é balanceado em relação ao masculino. Valores próximos a 1 indicam que há maior balanceamento. Valores próximos a zero indicam que há muito mais homens que mulheres empreendendo. Valor maiores que 1 indicam que há mais mulheres empreendendo em relação a homens.</div>
+<p>Mas se notar, esta variável está como char (qualitativo), mas tem que estar como numérico. Veja a seguir.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># funcao class serve para verificar o tipo da variavel</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(GEM_APS<span class="sc">$</span>female_male_TEA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "character"</code></pre>
+</div>
+</div>
+<p>Como converter?</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>GEM_APS<span class="sc">$</span>female_male_TEA <span class="ot">&lt;-</span> <span class="fu">as.double</span>(GEM_APS<span class="sc">$</span>female_male_TEA)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(GEM_APS<span class="sc">$</span>female_male_TEA)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "numeric"</code></pre>
+</div>
+</div>
+<p>Agora é possível usar a função <code>mutate</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">perc_fem_male_TEA =</span> female_male_TEA <span class="sc">*</span> <span class="dv">100</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(year, economy, perc_fem_male_TEA) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,128 × 3
+    year economy       perc_fem_male_TEA
+   &lt;dbl&gt; &lt;chr&gt;                     &lt;dbl&gt;
+ 1  2023 United States                84
+ 2  2023 South Africa                 76
+ 3  2023 Greece                       79
+ 4  2023 Netherlands                  80
+ 5  2023 France                       72
+ 6  2023 Spain                        81
+ 7  2023 Hungary                      56
+ 8  2023 Italy                        61
+ 9  2023 Romania                      71
+10  2023 Switzerland                  90
+# ℹ 1,118 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="funções-group_by-e-summarise" class="level3">
+<h3 class="anchored" data-anchor-id="funções-group_by-e-summarise">Funções <code>group_by</code> e <code>summarise</code></h3>
+<p>As funções <code>group_by</code> e <code>summarise</code> são geralmente aplicadas em conjunto. A primeira realiza algum agrupamento e a segunda realiza uma sumarização dos dados.</p>
+<p>Para exemplificar, vamos pegar dados de 2023 para países da América do Sul e América do Norte. Já vimos como fazer isso usando a função <code>filter</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># estes sao os paises</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>americas <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>,<span class="st">"Chile"</span>,<span class="st">"Uruguay"</span>,<span class="st">"Colombia"</span>,<span class="st">"Canada"</span>,</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>              <span class="st">"Ecuador"</span>,<span class="st">"Mexico"</span>,<span class="st">"United States"</span>,<span class="st">"Venezuela"</span>)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="co"># primeiro vamos filtrar o ano de 2023 e depois filtramos aqueles paises que estao no vetor chamado americas</span></span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>GEM23_americas <span class="ot">&lt;-</span> </span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>  GEM_APS <span class="sc">|&gt;</span> </span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2023</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(economy <span class="sc">%in%</span> americas)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a>GEM23_americas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 18
+   code economy        year perceived_opportunities perceived_capabilities
+  &lt;dbl&gt; &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;                   &lt;chr&gt;                 
+1     1 United States  2023 53.81                   48.99                 
+2    52 Mexico         2023 61.52                   69.19                 
+3    55 Brazil         2023 65.37                   65.89                 
+4    56 Chile          2023 59.42                   75.67                 
+5    57 Colombia       2023 59.96                   72.24                 
+6    58 Venezuela      2023 65.83                   84.07                 
+7   101 Canada         2023 62.57                   56.66                 
+8   593 Ecuador        2023 54.28                   75.15                 
+9   598 Uruguay        2023 58.26                   69.83                 
+# ℹ 13 more variables: fear_failure_rate &lt;chr&gt;,
+#   entrepreneurial_intentions &lt;chr&gt;, tea &lt;chr&gt;,
+#   established_business_ownership &lt;chr&gt;,
+#   entrepreneurial_employee_activity &lt;chr&gt;, motivational_index &lt;chr&gt;,
+#   female_male_TEA &lt;dbl&gt;, female_male_opportunity_TEA &lt;chr&gt;,
+#   high_job_creation_expectation &lt;chr&gt;, innovation &lt;chr&gt;,
+#   business_services_sector &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>O próximo passo é fazer um tratamento para criar uma variável nova que será usada para identificar se é país da América do Norte ou Sul. Para isso, vamos usar a função <code>mutate</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># usando um if_else verificamos se o nome do pais e Mexico OU Canada OU United States. Caso verdadeiro, atribui-se o valor de 'Norte', caso contrario, atribui-se o valor de Sul a variável hemisferio, que devera vir depois (.after) da variavel economy</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>GEM23_americas <span class="ot">&lt;-</span> </span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>  GEM23_americas <span class="sc">|&gt;</span> </span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">hemisferio =</span> <span class="fu">if_else</span>(economy <span class="sc">==</span> <span class="st">'Mexico'</span><span class="sc">|</span></span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a>                           economy <span class="sc">==</span> <span class="st">'Canada'</span><span class="sc">|</span></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a>                           economy <span class="sc">==</span> <span class="st">'United States'</span>,</span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Norte'</span>,</span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'Sul'</span>), <span class="at">.after =</span> economy)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a>GEM23_americas</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 19
+   code economy   hemisferio  year perceived_opportunit…¹ perceived_capabilities
+  &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      &lt;dbl&gt; &lt;chr&gt;                  &lt;chr&gt;                 
+1     1 United S… Norte       2023 53.81                  48.99                 
+2    52 Mexico    Norte       2023 61.52                  69.19                 
+3    55 Brazil    Sul         2023 65.37                  65.89                 
+4    56 Chile     Sul         2023 59.42                  75.67                 
+5    57 Colombia  Sul         2023 59.96                  72.24                 
+6    58 Venezuela Sul         2023 65.83                  84.07                 
+7   101 Canada    Norte       2023 62.57                  56.66                 
+8   593 Ecuador   Sul         2023 54.28                  75.15                 
+9   598 Uruguay   Sul         2023 58.26                  69.83                 
+# ℹ abbreviated name: ¹​perceived_opportunities
+# ℹ 13 more variables: fear_failure_rate &lt;chr&gt;,
+#   entrepreneurial_intentions &lt;chr&gt;, tea &lt;chr&gt;,
+#   established_business_ownership &lt;chr&gt;,
+#   entrepreneurial_employee_activity &lt;chr&gt;, motivational_index &lt;chr&gt;,
+#   female_male_TEA &lt;dbl&gt;, female_male_opportunity_TEA &lt;chr&gt;,
+#   high_job_creation_expectation &lt;chr&gt;, innovation &lt;chr&gt;, …</code></pre>
+</div>
+</div>
+<p>Agora sim vamos aplicar o group_by e summarise. Vamos agrupar pelo hemisfério e verificar a media da variavel <code>female_male_TEA</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>GEM23_americas <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(hemisferio) <span class="sc">|&gt;</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">media_fmt =</span> <span class="fu">mean</span>(female_male_TEA))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  hemisferio media_fmt
+  &lt;chr&gt;          &lt;dbl&gt;
+1 Norte          0.793
+2 Sul            0.933</code></pre>
+</div>
+</div>
+<p>Nota-se, portanto, que há um maior equilíbrio que empreendedoras e empreendedores no hemisfério sul da américa.</p>
+</section>
 </section>
 
 </main>

@@ -131,8 +131,222 @@ Quem está iniciando o uso de R frequentemente sofre um pouco com a leitura dos 
 
 Aqui vou tentar explicar como é possível fazer a leitura dos dados sem muitos problemas. Isso abre uma das potencialidades do R: ler dados de múltiplos formatos.
 
-1\) O primeiro passo é localizar onde o seu arquivo está
+1\) O primeiro passo é localizar onde o seu arquivo está. [Sugiro, fortemente, que deixe o arquivo em alguma pasta de trabalho com todos os arquivos que você vai usar.]{.underline}
+
+Uma boa forma de você localizar onde está o arquivo é usando os três pontinhos conforme print abaixo.
+
+![](imagens/print2.png){fig-align="center" width="582"}
+
+2\) Uma nova janela será aberta. Basta você navegar para achar a pasta onde seu arquivo está localizado. Eu guardei nesta pasta chamada 02_dados.
+
+![](images/clipboard-3574103888.png){fig-align="center" width="513"}
+
+3\) O próximo passo consiste em selecionar a opção "Import Dataset..." conforme o print abaixo.
+
+![](images/clipboard-3267730657.png)
+
+4\) Será aberta uma tela assistente que mostra uma prévia de como os resultados vão aparecer.
+
+![](imagens/print3.png)
+
+Dica de boa prática: copie o código gerado (marcado em vermelho acima), pois na próxima vez que rodar o script não precisa executar todo este passo a passo, basta executar o comando.
+
+```{r}
+#| warning: false
+
+library(readxl)
+
+GEM_APS <- read_excel("~/GitHub/r_unicamp/02_dados/GEM_APS.xlsx",
+                      col_types = c("numeric", "text", "numeric", 
+                                    "numeric", "numeric", "numeric", 
+                                    "numeric", "numeric", "numeric", 
+                                    "numeric", "numeric", "numeric", 
+                                    "numeric", "numeric", "numeric", 
+                                    "numeric", "numeric", "numeric"),
+                      progress = readxl_progress())
+
+```
 
 ## Análise exploratória de dados
 
-Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados.
+Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados. Antes de começar, assegure que o tidyverse esteja instalado e também carregue o pacote.
+
+Vou carregar outros pacotes que vão ser úteis ao longo das análises.
+
+```{r}
+#| warning: FALSE
+
+# instalando o pacote 
+# install.packages("tidyverse")
+
+
+# carregando pacote
+
+library(tidyverse)
+library(readxl)
+library(readr)
+```
+
+### Função `glimpse`
+
+Glimpse em inglês significa "vislumbre", "olhada rápida", "olhadinha". Esta função ajuda a você conferir rapidamente alguns detalhes sobre o dataframe.
+
+Pelos resultados, é possível ver o número de linhas (1128), colunas (18), os tipos de variáveis e as primeiras observações.
+
+```{r}
+
+glimpse(GEM_APS)
+
+```
+
+### Função `select`
+
+Esta função permite você **selecionar apenas as variáveis** **(colunas) que são do seu interesse no dataframe**.
+
+No código abaixo, vamos selecionar apenas as variáveis com o nome do país, o ano e a variável *Total early-stage entrepreneurial activity* (TEA). Em sequência, vamos guardar o resultado da seleção em um novo objeto.
+
+```{r}
+
+# selecionando apenas as variveis pais, ano, tea
+GEM_APS_select <- 
+  GEM_APS |> 
+  select(economy, year, tea)
+
+# a funcao head() imprime apenas as seis primeiras observacoes
+
+GEM_APS_select |> 
+  head()
+
+```
+
+| OBS.: O objeto `|>` se chama pipe. Ele é um elemento muito comum na estrutura do tidyverse. O que ele significa? Ele é artifício para encadear funções no R. Com o passar do seu uso ficará mais claro. O **atalho** para o pipe é **Ctrl + Shift + M**.
+
+### Função `filter`
+
+Esta função serve para **filtrar apenas observações (linhas) de acordo com um critério**.
+
+Vamos supor que eu queira pegar apenas as observações do Brasil.
+
+```{r}
+
+GEM_APS |> 
+  filter(economy == 'Brazil')
+
+```
+
+Vamos supor que eu queira pegar observações do Brasil ou Argentina. Para isso, vamos usar o conector ou (simbolizado por `|`). Vou aproveitar e colocar para ordenar pela coluna ano (year) usando a função `arrange`.
+
+```{r}
+
+GEM_APS |> 
+  filter(economy == 'Brazil' | 
+         economy == 'Argentina') |> 
+  arrange(year)
+
+
+```
+
+| Viu como o pipe funciona? Eu fiz uma operação primeiro (filtro) e depois consegui encadear com outra função (arrange). 
+
+Vamos supor que eu queira agora pegar os dados de Brasil e Argentina, mas eu queira pegar apenas observações 2010 adiante. Agora vamos ter que usar também o conector and', simbolizado por `&`.
+
+```{r}
+
+GEM_APS |> 
+  filter((economy == 'Brazil' | 
+         economy == 'Argentina') & year >= 2010)
+
+```
+
+### Função `mutate`
+
+A função `mutate` é útil para a criação de variáveis. Vamos fazer um exercício com a variável `female_male_TEA`, multiplicando-a por 100 para deixar na lógica percentual.
+
+| A variável female_male_TEA indica o quanto que o empreendedorismo por mulheres é balanceado em relação ao masculino. Valores próximos a 1 indicam que há maior balanceamento. Valores próximos a zero indicam que há muito mais homens que mulheres empreendendo. Valor maiores que 1 indicam que há mais mulheres empreendendo em relação a homens. 
+
+Mas se notar, esta variável está como char (qualitativo), mas tem que estar como numérico. Veja a seguir.
+
+```{r}
+
+# funcao class serve para verificar o tipo da variavel
+
+class(GEM_APS$female_male_TEA)
+```
+
+Como converter?
+
+```{r}
+
+GEM_APS$female_male_TEA <- as.double(GEM_APS$female_male_TEA)
+
+class(GEM_APS$female_male_TEA)
+
+```
+
+Agora é possível usar a função `mutate`.
+
+```{r}
+
+GEM_APS |> 
+  mutate(perc_fem_male_TEA = female_male_TEA * 100) |> 
+  select(year, economy, perc_fem_male_TEA) 
+
+```
+
+### Funções `group_by` e `summarise`
+
+As funções `group_by` e `summarise` são geralmente aplicadas em conjunto. A primeira realiza algum agrupamento e a segunda realiza uma sumarização dos dados.
+
+Para exemplificar, vamos pegar dados de 2023 para países da América do Sul e América do Norte. Já vimos como fazer isso usando a função `filter`.
+
+```{r}
+
+# estes sao os paises
+
+americas <- c("Brazil","Chile","Uruguay","Colombia","Canada",
+              "Ecuador","Mexico","United States","Venezuela")
+
+# primeiro vamos filtrar o ano de 2023 e depois filtramos aqueles paises que estao no vetor chamado americas
+
+GEM23_americas <- 
+  GEM_APS |> 
+  filter(year == 2023) |> 
+  filter(economy %in% americas)
+
+GEM23_americas
+
+```
+
+O próximo passo é fazer um tratamento para criar uma variável nova que será usada para identificar se é país da América do Norte ou Sul. Para isso, vamos usar a função `mutate`.
+
+```{r}
+
+# usando um if_else verificamos se o nome do pais e Mexico OU Canada OU United States. Caso verdadeiro, atribui-se o valor de 'Norte', caso contrario, atribui-se o valor de Sul a variável hemisferio, que devera vir depois (.after) da variavel economy
+
+GEM23_americas <- 
+  GEM23_americas |> 
+  mutate(hemisferio = if_else(economy == 'Mexico'|
+                           economy == 'Canada'|
+                           economy == 'United States',
+                           'Norte',
+                           'Sul'), .after = economy)
+
+GEM23_americas
+
+```
+
+Agora sim vamos aplicar o group_by e summarise. Vamos agrupar pelo hemisfério e verificar a media da variavel `female_male_TEA`.
+
+```{r}
+
+GEM23_americas |> 
+  group_by(hemisferio) |> 
+  summarise(media_fmt = mean(female_male_TEA))
+
+```
+
+Nota-se, portanto, que há um maior equilíbrio que empreendedoras e empreendedores no hemisfério sul da américa.
+
+### Funções de join
+
+Existem múltiplos join (ex.: `inner_join`, `left_join`, `right_join`, `full_join`) e a principal função deles é unir dois conjunto de dados
