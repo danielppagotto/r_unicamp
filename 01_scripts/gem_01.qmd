@@ -221,7 +221,7 @@ GEM_APS_select |>
 
 ```
 
-| OBS.: O objeto `|>` se chama pipe. Ele é um elemento muito comum na estrutura do tidyverse. O que ele significa? Ele é artifício para encadear funções no R. Com o passar do seu uso ficará mais claro. O **atalho** para o pipe é **Ctrl + Shift + M**.
+| OBS.: O objeto `|>` se chama pipe. Ele é um elemento muito comum na estrutura do tidyverse. O que ele significa? Ele é artifício para encadear funções no R. Com o passar do seu uso ficará mais claro. O **atalho** para o pipe é **Ctrl + Shift + M**. Observação: em algumas versões, o pipe pode aparecer deste modo `%>%`.
 
 ### Função `filter`
 
