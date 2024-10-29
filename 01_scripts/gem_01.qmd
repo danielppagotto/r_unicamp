@@ -154,16 +154,13 @@ Dica de boa prática: copie o código gerado (marcado em vermelho acima), pois n
 ```{r}
 #| warning: false
 
-library(readxl)
-
-GEM_APS <- read_excel("~/GitHub/r_unicamp/02_dados/GEM_APS.xlsx",
+GEM_APS <- readxl::read_excel("~/GitHub/r_unicamp/02_dados/GEM_APS.xlsx",
                       col_types = c("numeric", "text", "numeric", 
                                     "numeric", "numeric", "numeric", 
                                     "numeric", "numeric", "numeric", 
                                     "numeric", "numeric", "numeric", 
                                     "numeric", "numeric", "numeric", 
-                                    "numeric", "numeric", "numeric"),
-                      progress = readxl_progress())
+                                    "numeric", "numeric", "numeric"))
 
 ```
 
@@ -185,6 +182,11 @@ Vou carregar outros pacotes que vão ser úteis ao longo das análises.
 library(tidyverse)
 library(readxl)
 library(readr)
+library(skimr)
+library(ggrepel)
+library(GGally)
+library(car)
+
 ```
 
 ### Função `glimpse`
@@ -349,4 +351,405 @@ Nota-se, portanto, que há um maior equilíbrio que empreendedoras e empreendedo
 
 ### Funções de join
 
-Existem múltiplos join (ex.: `inner_join`, `left_join`, `right_join`, `full_join`) e a principal função deles é unir dois conjunto de dados
+Existem múltiplos join (ex.: `inner_join`, `left_join`, `right_join`, `full_join`) e a principal função deles é unir dois conjunto de dados.
+
+Vamos ver um exemplo que preparei neste artigo.
+
+[![](imagens/print4.png){fig-align="center" width="411"}](https://regepe.org.br/regepe/article/view/2384)
+
+Vamos ler dois conjuntos de dados que preparei. Separei um recorte da base GEM APS para 2019 e uma base da Worldwide Governance Indicators (WGI).
+
+```{r}
+#|warning: FALSE
+
+# Lendo o GEM APS primeiro
+
+gem_aps19 <- read_delim("~/GitHub/r_unicamp/02_dados/gem_2019_aps.csv", 
+                      delim = ";",
+                      show_col_types = FALSE)
+
+# Lendo a WGI
+
+wgi <- read_delim("~/GitHub/r_unicamp/02_dados/wgi.csv",
+                  delim = ",",
+                  show_col_types = FALSE) |> 
+       select(-`...1`)
+
+```
+
+Vamos olhar as estruturas das duas bases.
+
+```{r}
+
+glimpse(gem_aps19)
+
+```
+
+```{r}
+
+glimpse(wgi)
+```
+
+Note que as duas bases possuem variáveis equivalentes. Na base `wgi` a gente tem a variável `code` já a base `gem_aps19` tem a variável `abrev`.
+
+A partir disso, é possível fazer um join.
+
+```{r}
+
+gem_wgi <- 
+  gem_aps19 |> 
+  left_join(wgi, by = c("abrev"="code"))
+
+gem_wgi
+```
+
+O domínio de joins é algo que abre um mar de possibilidades, pois você pode conjugar bases de diferentes domínio. Inclusive, esta é a forma que mais acontece com o GEM, a exemplo dos seguintes estudos.
+
+-   Audretsch, D. B., Belitski, M., Chowdhury, F., & Desai, S. (2022). Necessity or opportunity? Government size, tax policy, corruption, and implications for entrepreneurship. *Small Business Economics*, *58*(4), 2025-2042.
+
+-   Amorós, J. E., Leporati, M., & Torres-Marín, A. J. (2023). Senior entrepreneurship dynamics: Latin America perspective. *International Journal of Entrepreneurial Behavior & Research*.
+
+-   Abdinnour, S., & Adeniji, S. O. (2023). Empirical analysis of the impact of entrepreneurial activity on economic growth of Global Entrepreneurship Monitor (GEM) countries. *Journal of Global Entrepreneurship Research*, *13*(1), 12.
+
+### Função `skimr`
+
+A função skim é do pacote `skimr`. A função `skim` é
+
+```{r}
+#|warning: FALSE
+
+gem_wgi |> 
+  select(economy, 
+         continent,
+         entrepreneurship_as_good_carrer_choice,
+         tea,
+         rule_of_law,
+         regulatory_quality,
+         political_stability,
+         voice_accountability) |> 
+  skim()
+
+```
+
+## Análise exploratória com apoio de visualização
+
+O R base contém várias funções de visualização, a exemplo desta abaixo.
+
+```{r}
+
+# cria um histograma usando o R base
+
+hist(gem_aps19$entrepreneurship_as_good_carrer_choice)
+```
+
+No entanto, existe um pacote chamado ggplot2 que contém uma grande vantagem dele em relação ao R base e outros pacotes estatísticos: a ampla capacidade de customização de gráficos. Vamos usar o mesmo exemplo acima, mas explorando algumas possibilidades de customização.
+
+### Histograma
+
+```{r}
+
+gem_aps19 |> 
+  ggplot(aes(x = entrepreneurship_as_good_carrer_choice)) +
+  geom_histogram()
+
+```
+
+Vamos customizar os nomes do eixos e acrescentar um título.
+
+```{r}
+
+gem_aps19 |> 
+  ggplot(aes(y = entrepreneurship_as_good_carrer_choice)) +
+  geom_boxplot() + 
+  ylab("Empreendedorismo como opção de carreira") + 
+  ggtitle("Histograma - Empreendedorismo como opção de carreira","Fonte: GEM (2019)")
+
+```
+
+Vamos acrescentar dois elementos interessantes. Primeiro, vamos desagregar estes boxplot por continentes usando o parâmetro `fill` e também vamos colocar um fundo branco no gráfico. Também vamos retirar os valores do eixo x e colocar um título ao eixo x.
+
+```{r}
+
+gem_aps19 |> 
+  rename(Continente = continent) |> 
+  ggplot(aes(y = entrepreneurship_as_good_carrer_choice,
+             fill = Continente)) +
+  geom_boxplot() + 
+  ylab("Empreendedorismo como opção de carreira") + 
+  ggtitle("Histograma - Empreendedorismo como opção de carreira",
+          "Fonte: GEM (2019)") + 
+  xlab("Continente") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank())
+
+
+```
+
+Certo, e como salvar isso?
+
+```{r}
+
+# atribuir o grafico a um objeto chamado grafico1
+
+grafico1 <- 
+  gem_aps19 |> 
+  rename(Continente = continent) |> 
+  ggplot(aes(y = entrepreneurship_as_good_carrer_choice,
+             fill = Continente)) +
+  geom_boxplot() + 
+  ylab("Empreendedorismo como opção de carreira") + 
+  ggtitle("Histograma - Empreendedorismo como opção de carreira",
+          "Fonte: GEM (2019)") + 
+  xlab("Continente") +
+  theme_minimal() +
+theme(
+    axis.text.x = element_blank(),
+    panel.background = element_rect(fill = "white", 
+                                    color = NA),
+    axis.title.x = element_text(size = 14), 
+    axis.title.y = element_text(size = 14), 
+    axis.text.y = element_text(size = 12),
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 14)
+  )
+
+ggsave(filename = "grafico1.jpeg", 
+       plot = grafico1, 
+       height = 6, 
+       width = 7,
+       dpi = 450)
+
+```
+
+O ChatGPT é um ótimo aliado para visualização de dados. Pergunte para ele como aumentar as fontes dos eixos x e y.
+
+| Sugestão de PROMPT: 
+| Como aumentar as fontes dos eixos x e y do gráfico abaixo?
+
+``` R
+grafico1 <- 
+  gem_aps19 |> 
+  rename(Continente = continent) |> 
+  ggplot(aes(y = entrepreneurship_as_good_carrer_choice,
+             fill = Continente)) +
+  geom_boxplot() + 
+  ylab("Empreendedorismo como opção de carreira") + 
+  ggtitle("Histograma - Empreendedorismo como opção de carreira",
+          "Fonte: GEM (2019)") + 
+  xlab("Continente") +
+  theme_minimal() +
+  theme(axis.text.x = element_blank(),
+        panel.background = element_rect(fill = "white", 
+                                        color = NA))
+```
+
+### Gráfico de linhas
+
+Agora eu quero criar um gráfico de linhas para verificar a evolução de determinado indicador.
+
+Vamos acessar dados do GEM NES, que é a base do GEM que levanta informações contextual de cada país a partir de especialistas.
+
+```{r}
+#| warning: false
+
+# lendo os dados do GEM NES
+
+GEM_NES <- read_excel("~/GitHub/r_unicamp/02_dados/GEM_NES.xlsx", 
+    col_types = c("numeric", "text", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric", 
+        "numeric", "numeric", "numeric"))
+
+
+```
+
+Vamos filtrar as observações do Brasil e Chile.
+
+```{r}
+
+br_chile <- GEM_NES |> 
+                filter(economy == "Brazil" |
+                       economy == "Chile")
+
+```
+
+Vamos agora plotar os gráficos para evolução da variável `governamental_support_policies`. Vamos usar o argumento `color` colocando o nome da variável país para plotar linhas que distinguem as nações. Como o Chile começa a ter um monitoramento contínuo apenas a partir de 2005, vou filtrar as observações.
+
+```{r}
+
+br_chile |> 
+  filter(year > 2005) |> 
+  ggplot(aes(x = year, 
+             y = governamental_support_policies,
+             color = economy)) + 
+  geom_line()
+
+```
+
+Agora é só melhorar um pouco o gráfico. Vamos colocar títulos aos eixos, bem como aumentar um pouco a espessura da reta.
+
+```{r}
+
+br_chile |> 
+  filter(year > 2005) |> 
+  ggplot(aes(x = year, 
+             y = governamental_support_policies,
+             color = economy)) + 
+  geom_line(size = 1.5) +
+  scale_x_continuous(breaks = seq(2006, 2023, by = 1)) +
+  theme_minimal() + 
+  xlab("Ano") +
+  ylab("Políticas públicas de suporte ao empreendedorismo") +
+  ggtitle("Evolução do suporte governamental por meio de políticas públicas - Brasil e Chile","Fonte: GEM-NES") + 
+  theme(axis.text.x = element_text(angle = 90, 
+                                   hjust = 1)) 
+
+```
+
+### Gráfico de colunas
+
+Vamos trabalhar com uma forma alternativa de visualização da mesma informação?
+
+```{r}
+
+br_chile |> 
+  filter(year > 2005) |> 
+  ggplot(aes(x = year, 
+             y = governamental_support_policies,
+             fill = economy)) + 
+  geom_col(position = position_dodge(width = 0.9)) +  
+  scale_x_continuous(breaks = seq(2006, 2023, by = 1)) +
+  geom_text(aes(label = governamental_support_policies), 
+            position = position_dodge(width = 0.9),   
+            angle = 90, 
+            vjust = 0.3, 
+            hjust = -0.3,
+            size = 3) +  
+  theme_minimal() + 
+  xlab("Ano") +
+  ylab("Políticas públicas de suporte ao empreendedorismo") +
+  coord_cartesian(ylim = c(0, 5.73 * 1.1))  +
+  theme(axis.text.x = element_text(angle = 90, 
+                                   vjust = -2.5)) 
+
+
+```
+
+A página a seguir contém exemplos da aplicação do ggplot2: <https://r-graph-gallery.com/ggplot2-package.html>
+
+### Gráfico de dispersão
+
+O gráfico de dispersão é usado para associar duas variáveis. No código abaixo trazemos um exemplo e ainda incluímos alguns extras para deixar o gráfico mais interessante.
+
+-   Usando o `geom_point()` conseguimos plotar o pontos.
+
+-   Usando o `geom_smooth(method = 'lm')` conseguimos plotar uma linha que mostra a tendência de associação. O `se` é usado para tirar os intervalos de confiança ao redor da reta.
+
+-   Usando o `geom_text_repel()` conseguimos adicionar textos aos pontos para sinalizar os países;
+
+```{r}
+
+gem_wgi |> 
+  ggplot(aes(x = political_stability,
+             y = entrepreneurship_as_good_carrer_choice)) + 
+  geom_point(size = 1.5, aes(col = continent)) + 
+  geom_smooth(method = 'lm', se = FALSE) +
+  geom_text_repel(aes(label = economy)) +
+  theme_minimal() +
+  xlab("Estabilidade política") +
+  ylab("Empreendedorismo como opção de carreira")
+
+```
+
+Vamos fazer só mais uma última adição: usar a função `facet_wrap()` para desagregar as visualizações por continente.
+
+```{r}
+
+gem_wgi |> 
+  ggplot(aes(x = political_stability,
+             y = entrepreneurship_as_good_carrer_choice)) + 
+  geom_point(size = 1.5, aes(col = continent)) + 
+  geom_smooth(method = 'lm', se = FALSE) +
+  geom_text_repel(aes(label = economy)) +
+  facet_wrap(~continent) +
+  theme_minimal() +
+  xlab("Estabilidade política") +
+  ylab("Empreendedorismo como opção de carreira")
+
+
+```
+
+###  Gráfico de diagrama de correlação 
+
+A função `ggpairs()` do pacote `GGally` cria um diagrama de correlação de modo automatizado.
+
+Vamos selecionar apenas algumas variáveis para aplicar.
+
+```{r}
+
+gem_wgi |> 
+  select(tea, entrepreneurship_as_good_carrer_choice,
+         rule_of_law, political_stability, 
+         regulatory_quality) |> 
+  ggpairs(progress = FALSE)
+
+```
+
+## ANOVA 
+
+ANOVA é um teste inferencial paramétrico para comparação de médias. A hipótese do teste é avaliar se média populacional de duas ou mais categorias são iguais.
+
+Vamos aplicar o teste para comparar o TEA por continent.
+
+```{r}
+
+modelo <- aov(formula = tea ~ continent, data = gem_wgi)
+
+summary(modelo)
+
+```
+
+De acordo com os resultados, a média do TEA possui diferença significativa na população a p \< 0,05.
+
+Todavia, por ser um teste paramétrico, a ANOVA possui alguns pressupostos que devem ser atendidos.
+
+### Testando pressupostos - homogeneidade da variância
+
+O primeiro teste é da homogeneidade da variância. Vamos usar o teste de Levene para avaliar.
+
+```{r}
+
+leveneTest(tea ~ continent, data = gem_wgi)
+
+```
+
+Se o p-valor for menor que 0,05 significa que temos evidência para rejeitar a hipótese das variâncias. Neste caso, como p \> 0,05 assumimos que temos homogeneidade da variância. Logo, este pressuposto foi atendido.
+
+### Testando pressupostos - normalidade dos resíduos 
+
+Para testar a normalidade dos resíduos vamos usar o teste de Shapiro-Wilk. Neste teste, se p \< 0,05, rejeitamos a hipótese nula. Logo, a distribuição dos resíduos difere de uma distribuição normal.
+
+No nosso caso p\>0,05, logo, a distribuição não difere de uma distribuição normal. Logo, o pressuposto da normalidade é atendido.
+
+```{r}
+
+shapiro.test(resid(modelo))
+
+```
+
+Visualizando o histograma dos resíduos conseguimos perceber que de fato é uma distribuição que se assemelha a uma curva normal, né?
+
+```{r}
+
+hist(resid(modelo))
+```
+
+Vamos agora ver o quão diferente são cada par a par de grupos. A última coluna p_adj é o teste para comparação. Observa-se que aqueles cujo p \< 0,05 possuem diferenças significativas (America-Africa; Asia-America; Europa-America)
+
+```{r}
+
+TukeyHSD(modelo)
+
+
+```
