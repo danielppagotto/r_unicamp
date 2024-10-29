@@ -439,18 +439,18 @@ O R base contém várias funções de visualização, a exemplo desta abaixo.
 
 # cria um histograma usando o R base
 
-hist(gem_aps19$entrepreneurship_as_good_carrer_choice)
+boxplot(gem_aps19$entrepreneurship_as_good_carrer_choice)
 ```
 
 No entanto, existe um pacote chamado ggplot2 que contém uma grande vantagem dele em relação ao R base e outros pacotes estatísticos: a ampla capacidade de customização de gráficos. Vamos usar o mesmo exemplo acima, mas explorando algumas possibilidades de customização.
 
-### Histograma
+### Boxplot
 
 ```{r}
 
 gem_aps19 |> 
-  ggplot(aes(x = entrepreneurship_as_good_carrer_choice)) +
-  geom_histogram()
+  ggplot(aes(y = entrepreneurship_as_good_carrer_choice)) +
+  geom_boxplot() 
 
 ```
 
