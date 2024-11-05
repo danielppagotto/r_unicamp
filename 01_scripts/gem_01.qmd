@@ -44,7 +44,7 @@ Utilize parênteses para ordenar a lógica de prioridade de operações.
 
 ```{r}
 
-#Atribuições
+#Atribuicoes
 x <- 5 + 5
 y <- 10 - 16
 a <- 9
@@ -176,7 +176,6 @@ Vou carregar outros pacotes que vão ser úteis ao longo das análises.
 # instalando o pacote 
 # install.packages("tidyverse")
 
-
 # carregando pacote
 
 library(tidyverse)
@@ -248,7 +247,7 @@ GEM_APS |>
 
 ```
 
-| Viu como o pipe funciona? Eu fiz uma operação primeiro (filtro) e depois consegui encadear com outra função (arrange). 
+| Viu como o pipe funciona? Eu fiz uma operação primeiro (filtro) e depois consegui encadear com outra função (arrange).
 
 Vamos supor que eu queira agora pegar os dados de Brasil e Argentina, mas eu queira pegar apenas observações 2010 adiante. Agora vamos ter que usar também o conector and', simbolizado por `&`.
 
@@ -264,7 +263,7 @@ GEM_APS |>
 
 A função `mutate` é útil para a criação de variáveis. Vamos fazer um exercício com a variável `female_male_TEA`, multiplicando-a por 100 para deixar na lógica percentual.
 
-| A variável female_male_TEA indica o quanto que o empreendedorismo por mulheres é balanceado em relação ao masculino. Valores próximos a 1 indicam que há maior balanceamento. Valores próximos a zero indicam que há muito mais homens que mulheres empreendendo. Valor maiores que 1 indicam que há mais mulheres empreendendo em relação a homens. 
+| A variável female_male_TEA indica o quanto que o empreendedorismo por mulheres é balanceado em relação ao masculino. Valores próximos a 1 indicam que há maior balanceamento. Valores próximos a zero indicam que há muito mais homens que mulheres empreendendo. Valor maiores que 1 indicam que há mais mulheres empreendendo em relação a homens.
 
 Mas se notar, esta variável está como char (qualitativo), mas tem que estar como numérico. Veja a seguir.
 
@@ -523,10 +522,10 @@ ggsave(filename = "grafico1.jpeg",
 
 O ChatGPT é um ótimo aliado para visualização de dados. Pergunte para ele como aumentar as fontes dos eixos x e y.
 
-| Sugestão de PROMPT: 
+| Sugestão de PROMPT:
 | Como aumentar as fontes dos eixos x e y do gráfico abaixo?
 
-``` R
+``` r
 grafico1 <- 
   gem_aps19 |> 
   rename(Continente = continent) |> 
@@ -680,7 +679,7 @@ gem_wgi |>
 
 ```
 
-###  Gráfico de diagrama de correlação 
+### Gráfico de diagrama de correlação
 
 A função `ggpairs()` do pacote `GGally` cria um diagrama de correlação de modo automatizado.
 
@@ -696,7 +695,7 @@ gem_wgi |>
 
 ```
 
-## ANOVA 
+## ANOVA
 
 ANOVA é um teste inferencial paramétrico para comparação de médias. A hipótese do teste é avaliar se média populacional de duas ou mais categorias são iguais.
 
@@ -726,7 +725,7 @@ leveneTest(tea ~ continent, data = gem_wgi)
 
 Se o p-valor for menor que 0,05 significa que temos evidência para rejeitar a hipótese das variâncias. Neste caso, como p \> 0,05 assumimos que temos homogeneidade da variância. Logo, este pressuposto foi atendido.
 
-### Testando pressupostos - normalidade dos resíduos 
+### Testando pressupostos - normalidade dos resíduos
 
 Para testar a normalidade dos resíduos vamos usar o teste de Shapiro-Wilk. Neste teste, se p \< 0,05, rejeitamos a hipótese nula. Logo, a distribuição dos resíduos difere de uma distribuição normal.
 
