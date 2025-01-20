@@ -185,6 +185,7 @@ library(skimr)
 library(ggrepel)
 library(GGally)
 library(car)
+library(rstatix)
 
 ```
 
@@ -703,13 +704,19 @@ Vamos aplicar o teste para comparar o TEA por continent.
 
 ```{r}
 
-modelo <- aov(formula = tea ~ continent, data = gem_wgi)
+modelo <- anova_test(formula = tea ~ continent, 
+                     data = gem_wgi, 
+                     effect.size = "ges")
 
-summary(modelo)
+modelo
+
+
+modelo2 <- aov(formula = tea ~ continent, 
+               data = gem_wgi)
 
 ```
 
-De acordo com os resultados, a média do TEA possui diferença significativa na população a p \< 0,05.
+De acordo com os resultados, a média do TEA possui diferença significativa na população a p \< 0,05. Cerca de 52% da variância total pode ser explicada pela associação ao grupo.
 
 Todavia, por ser um teste paramétrico, a ANOVA possui alguns pressupostos que devem ser atendidos.
 
@@ -734,6 +741,11 @@ No nosso caso p\>0,05, logo, a distribuição não difere de uma distribuição 
 ```{r}
 
 shapiro.test(resid(modelo))
+
+
+shapiro.test(resid(modelo2))
+
+hist(resid(modelo2))
 
 ```
 
