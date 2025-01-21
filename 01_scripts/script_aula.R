@@ -99,4 +99,28 @@ GEM23_americas |>
 
 # joins -------------------------------------------------------------------
 
+gem_aps19 <- read_delim("https://raw.githubusercontent.com/danielppagotto/r_unicamp/refs/heads/main/02_dados/gem_2019_aps.csv", 
+                        delim = ";",
+                        show_col_types = FALSE)
 
+wgi <- read_delim("https://github.com/danielppagotto/r_unicamp/raw/refs/heads/main/02_dados/wgi.csv",
+                  delim = ",",
+                  show_col_types = FALSE) |> 
+  select(-`...1`)
+
+
+glimpse(gem_aps19)
+glimpse(wgi)
+
+# inner_join como exemplo 
+
+juncao_inner <- 
+  wgi |> 
+  inner_join(gem_aps19,
+             by = c("code"="abrev")) |> 
+  select(-economy, -year, -cod_pais, -code)
+
+juncao_left <- 
+  wgi |> 
+    left_join(gem_aps19,
+              by = c("code"="abrev"))
