@@ -155,6 +155,15 @@ view(dfSummary(juncao_inner))
 
 DataExplorer::create_report(juncao_inner)
 
-# o link para outros pacotes 
+# o link para outros pacotes de analise exploratoria de dados
 # https://www.business-science.io/code-tools/2024/10/03/top-10-r-packages-for-eda.html
 
+
+
+
+
+
+
+
+# extra: tidyplots - https://tidyplots.org/
+# https://jbengler.github.io/tidyplots/authors.html#citation
