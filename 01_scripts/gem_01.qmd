@@ -398,7 +398,8 @@ A partir disso, é possível fazer um join.
 
 gem_wgi <- 
   gem_aps19 |> 
-  left_join(wgi, by = c("abrev"="code"))
+  left_join(wgi, 
+            by = c("abrev"="code"))
 
 gem_wgi
 ```
@@ -693,6 +694,43 @@ gem_wgi |>
          rule_of_law, political_stability, 
          regulatory_quality) |> 
   ggpairs(progress = FALSE)
+
+```
+
+### Mapa
+
+O código abaixo apresenta como criar um mapa cloroplético.
+
+```{r}
+
+library(sf)
+library(rnaturalearth)
+
+america_sul <- ne_countries(scale = "medium", 
+                            continent = "South America", 
+                            returnclass = "sf")
+
+no_data <- america_sul |> 
+  filter(!admin %in% data$country)
+
+map_data <- 
+  america_sul |> 
+  left_join(GEM23_americas, 
+            by = c("sovereignt"="economy")) |> 
+  filter(tea != "NA")
+
+map_data |> 
+ggplot() +
+    geom_sf(data = america_sul, 
+            fill = "grey70", color = "black", 
+            linetype = "dashed") +
+  geom_sf(aes(fill = tea)) +
+  scale_fill_gradient(low = "lightgreen", 
+                      high = "darkgreen", 
+                      name = "TEA") +
+  theme_minimal() + 
+  ggtitle("Total early stage entrepreneurial activity", 
+          "Fonte: GEM (2023)")
 
 ```
 
