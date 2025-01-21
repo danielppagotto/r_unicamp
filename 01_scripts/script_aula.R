@@ -220,20 +220,27 @@ ggplot(data = gem_aps19,
 
 # boxplot -----------------------------------------------------------------
 
-grafico <- 
-  gem_aps19 |> 
-      rename(continente = continent) |> 
+
+grafico <- gem_aps19 |> 
+      rename(Continente = continent) |> 
       ggplot(aes(y = entrepreneurship_as_good_carrer_choice,
-               fill = continente)) +
+               fill = Continente)) +
       geom_boxplot() + 
       ylab("Entrepreneurship as good carrer of choice") + 
       ggtitle("Variável de estudo","Fonte: GEM - 2019") +
       theme_minimal() +
       theme(axis.text.x = element_blank(),
-            legend.position = "bottom")
+            legend.position = "bottom",
+            legend.title = element_text(size = 14),
+            legend.text = element_text(size = 12))
 
 ggsave("03_outputs/grafico1.svg", grafico, dpi = 300,
        height = 4, width = 5)
+
+
+# grafico de linhas -------------------------------------------------------
+
+
 
 
 # extra: tidyplots - https://tidyplots.org/
