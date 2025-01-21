@@ -1,5 +1,7 @@
 
-# carregando os pacotes 
+
+# Carregando os pacotes ---------------------------------------------------
+
 library(tidyverse)
 library(readxl)
 library(readr)
@@ -9,7 +11,8 @@ library(GGally)
 library(car)
 library(rstatix)
 
-# leitura dos dados
+
+# Leitura dos dados  ------------------------------------------------------
 
 GEM_APS <- read_excel("02_dados/GEM_APS.xlsx", 
                       col_types = c("numeric", "text", "numeric", 
@@ -18,7 +21,8 @@ GEM_APS <- read_excel("02_dados/GEM_APS.xlsx",
                                     "numeric", "numeric", "numeric", "numeric", "numeric", 
                                     "numeric"))
 
-# usando a funcao glimpse (dplyr - tidyverse)
+
+# Funcao glimpse ----------------------------------------------------------
 
 glimpse(GEM_APS)
 
@@ -34,7 +38,9 @@ GEM_APS_selecionadas <-
 GEM_APS_selecionadas |> 
   head()
 
-# usando a funcao filter 
+
+# Funcao filter  ----------------------------------------------------------
+
 
 Gem_brazil <- GEM_APS |> 
   filter(economy == "Brazil")
@@ -58,11 +64,18 @@ gem_br_arg_menor_2020 <-
   filter((economy == "Brazil" | 
          economy == "Argentina") & year < 2020)
 
-## Funcao mutate 
+# Funcao mutate -----------------------------------------------------------
+
 
 GEM_APS |> 
   select(economy, year, female_male_TEA) |> 
   mutate(perc_fem_male_tea = female_male_TEA * 100) |> 
   filter(year >= 2010 & economy == "Brazil") |> 
   arrange(desc(year))
+
+
+
+# Funcoes group by e summarise --------------------------------------------
+
+
 

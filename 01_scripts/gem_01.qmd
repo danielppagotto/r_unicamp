@@ -201,12 +201,6 @@ Pelos resultados, é possível ver o número de linhas (1128), colunas (18), os 
 
 ```{r}
 
-
-
-```
-
-```{r}
-
 glimpse(GEM_APS)
 
 ```
