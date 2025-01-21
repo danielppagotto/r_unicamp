@@ -154,3 +154,7 @@ view(dfSummary(juncao_inner))
 # usando o pacote Dataexplorer
 
 DataExplorer::create_report(juncao_inner)
+
+# o link para outros pacotes 
+# https://www.business-science.io/code-tools/2024/10/03/top-10-r-packages-for-eda.html
+
