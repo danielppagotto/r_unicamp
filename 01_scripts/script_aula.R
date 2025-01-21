@@ -240,7 +240,32 @@ ggsave("03_outputs/grafico1.svg", grafico, dpi = 300,
 
 # grafico de linhas -------------------------------------------------------
 
+GEM_NES <- readr::read_delim("https://raw.githubusercontent.com/danielppagotto/r_unicamp/refs/heads/main/02_dados/GEM_NES.csv", 
+           delim = ";", escape_double = FALSE, trim_ws = TRUE)
 
+glimpse(GEM_NES)
+
+br_chile <- GEM_NES |> 
+                filter(economy == "Brazil" | economy == "Chile")
+
+
+br_chile |> 
+  filter(year >= 2005) |> 
+  rename(País = economy) |> 
+  ggplot(aes(x = year,
+             y = governamental_support_policies,
+             color = País)) + 
+  geom_line(size = 1.5) +
+  scale_x_continuous(breaks = seq(2005, 2023, by = 1)) +
+  xlab("Ano") +
+  ylab("Políticas de suporte ao empreendedorismo") +
+  ggtitle("Percepção de especialistas sobre o suporte de políticas públicas ao \nempreendedorismo",
+          "Fonte: NES-GEM") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 90,
+                                   hjust = 1)) 
+  
 
 
 # extra: tidyplots - https://tidyplots.org/
