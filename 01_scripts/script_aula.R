@@ -267,6 +267,39 @@ br_chile |>
                                    hjust = 1)) 
   
 
+# grafico de colunas ------------------------------------------------------
+
+
+br_chile |> 
+  filter(year >= 2005) |> 
+  rename(País = economy) |> 
+  ggplot(aes(x = year,
+             y = governamental_support_policies,
+             fill = País)) + 
+  geom_col(position = position_dodge()) +
+  geom_text(aes(label = governamental_support_policies),
+            position = position_dodge(width = 0.9),
+            angle = 90, 
+            vjust = 0.3, 
+            hjust = -0.3,
+            size = 3) +
+  scale_x_continuous(breaks = seq(2005, 2023, by = 1)) +
+  scale_y_continuous(breaks = seq(0, 8, by = 1)) +
+  xlab("Ano") +
+  ylab("Políticas de suporte ao empreendedorismo") +
+  ggtitle("Percepção de especialistas sobre o suporte de políticas públicas ao \nempreendedorismo") +
+  theme_minimal() +
+  theme(legend.position = "bottom",
+        axis.text.x = element_text(angle = 90,
+                                   hjust = 1)) + 
+  coord_cartesian(ylim = c(0, 8)) 
+
+# Gráfico de dispersão ----------------------------------------------------
+
+
+
+
+
 
 # extra: tidyplots - https://tidyplots.org/
 # https://jbengler.github.io/tidyplots/authors.html#citation
