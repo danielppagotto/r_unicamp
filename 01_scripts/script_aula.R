@@ -206,7 +206,8 @@ mean_val <- mean(gem_aps19$entrepreneurship_as_good_carrer_choice, na.rm = TRUE)
 sd_val <- sd(gem_aps19$entrepreneurship_as_good_carrer_choice, na.rm = TRUE)
 
 # Criar o gráfico com o histograma e adicionar a curva normal
-ggplot(data = gem_aps19, aes(x = entrepreneurship_as_good_carrer_choice)) +
+ggplot(data = gem_aps19, 
+       aes(x = entrepreneurship_as_good_carrer_choice)) +
   geom_histogram(aes(y = ..density..), bins = 20, 
                  fill = "#0b3748", color = "black") + 
   stat_function(fun = dnorm, args = list(mean = mean_val, sd = sd_val), 
@@ -217,8 +218,22 @@ ggplot(data = gem_aps19, aes(x = entrepreneurship_as_good_carrer_choice)) +
   theme_minimal()
 
 
+# boxplot -----------------------------------------------------------------
 
+grafico <- 
+  gem_aps19 |> 
+      rename(continente = continent) |> 
+      ggplot(aes(y = entrepreneurship_as_good_carrer_choice,
+               fill = continente)) +
+      geom_boxplot() + 
+      ylab("Entrepreneurship as good carrer of choice") + 
+      ggtitle("Variável de estudo","Fonte: GEM - 2019") +
+      theme_minimal() +
+      theme(axis.text.x = element_blank(),
+            legend.position = "bottom")
 
+ggsave("03_outputs/grafico1.svg", grafico, dpi = 300,
+       height = 4, width = 5)
 
 
 # extra: tidyplots - https://tidyplots.org/
