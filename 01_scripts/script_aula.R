@@ -3,6 +3,7 @@
 # Carregando os pacotes ---------------------------------------------------
 
 library(tidyverse)
+library(ggplot2)
 library(readxl)
 library(readr)
 library(skimr)
@@ -14,6 +15,11 @@ library(summarytools)
 library(psych)
 library(gt)
 library(DataExplorer)
+library(writexl)
+library(haven)
+
+# esse comando serve para voce acessar informacoes sobre a funcao
+#?write_xlsx()
 
 
 # Leitura dos dados  ------------------------------------------------------
@@ -129,6 +135,7 @@ juncao_left <-
     left_join(gem_aps19,
               by = c("code"="abrev"))
 
+# Regepe - Pagotto & Borges 
 
 # analise descritiva ------------------------------------------------------
 
@@ -159,6 +166,55 @@ DataExplorer::create_report(juncao_inner)
 # https://www.business-science.io/code-tools/2024/10/03/top-10-r-packages-for-eda.html
 
 
+# como salvar uma base já tratada? ----------------------------------------
+
+writexl::write_xlsx(juncao_inner, 
+                    "03_outputs/exercicio.xlsx")
+
+write.csv(juncao_inner,
+          "03_outputs/exercicios.csv")
+
+foreign::write.dta(juncao_inner,
+                   "03_outputs/exercicios.dta")
+
+haven::write_sav(juncao_inner,
+                 "03_outputs/exercicios.sav")
+
+# Visualização de dados ---------------------------------------------------
+
+
+# histograma --------------------------------------------------------------
+
+hist(gem_aps19$entrepreneurship_as_good_carrer_choice)
+
+ggplot(data = gem_aps19,
+       aes(x = entrepreneurship_as_good_carrer_choice)) +
+  geom_histogram()
+
+ggplot(data = gem_aps19,
+       aes(x = entrepreneurship_as_good_carrer_choice)) +
+  geom_histogram(bins = 20, 
+                 fill = "#0b3748",
+                 color = "black") + 
+  xlab("Entrepreneurship as good carrer choice") +
+  ylab("Frequência") +
+  ggtitle("Variável do estudo","Fonte: GEM - 2019") +
+  theme_minimal()
+
+
+mean_val <- mean(gem_aps19$entrepreneurship_as_good_carrer_choice, na.rm = TRUE)
+sd_val <- sd(gem_aps19$entrepreneurship_as_good_carrer_choice, na.rm = TRUE)
+
+# Criar o gráfico com o histograma e adicionar a curva normal
+ggplot(data = gem_aps19, aes(x = entrepreneurship_as_good_carrer_choice)) +
+  geom_histogram(aes(y = ..density..), bins = 20, 
+                 fill = "#0b3748", color = "black") + 
+  stat_function(fun = dnorm, args = list(mean = mean_val, sd = sd_val), 
+                color = "red", size = 1) +
+  xlab("Entrepreneurship as good career choice") +
+  ylab("Density") +
+  ggtitle("Variável do estudo", "Fonte: GEM - 2019") +
+  theme_minimal()
 
 
 
