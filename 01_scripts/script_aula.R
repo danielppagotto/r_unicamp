@@ -322,9 +322,15 @@ ggsave("03_outputs/grafico3.jpeg",grafico3,
 
 # Gráfico de diagrama de correlação ---------------------------------------
 
+juncao_inner |> 
+  select(tea, entrepreneurship_as_good_carrer_choice,
+         rule_of_law, political_stability,
+         regulatory_quality) |> 
+  ggpairs()
 
 
-
+juncao_inner  |> 
+  ggcorr()
 
 
 
