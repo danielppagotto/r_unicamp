@@ -5,6 +5,8 @@ editor: visual
 toc: TRUE
 ---
 
+
+
 ## Usando R para explorar dados do GEM
 
 Este código possui algumas seções. A primeira delas será um nivelamento. Em sequência, teremos uma seção sobre a análise exploratória de dados usando o pacote `dplyr` e `ggplot2`. A última seção será para conduzir algumas análises de comparação de grupos.
@@ -14,6 +16,8 @@ Este código possui algumas seções. A primeira delas será um nivelamento. Em 
 ### Operações básicas
 
 Como qualquer linguagem de programação, o R executa instruções que são passadas. Vamos introduzir, vendo operações básicas.
+
+
 
 ```{r}
 
@@ -32,7 +36,11 @@ sqrt(16)
 
 ```
 
+
+
 Utilize parênteses para ordenar a lógica de prioridade de operações.
+
+
 
 ```{r}
 
@@ -40,7 +48,11 @@ Utilize parênteses para ordenar a lógica de prioridade de operações.
 
 ```
 
+
+
 É comum atribuirmos valores às variáveis. Para isso, usamos o símbolo `<-` ou `=`. A atribuição é útil, pois deixa o código mais limpo e fácil de prestar manutenção.
+
+
 
 ```{r}
 
@@ -54,11 +66,15 @@ certo <- TRUE
 
 ```
 
+
+
 Uma vez realizada a atribuição, os valores aparecem no painel do canto superior direito do RStudio (em *Environment*).
 
 ![](imagens/print1.png){fig-align="center" width="419"}
 
 Você pode resgatar valores atribuídos para realizar cálculos com os valores guardados.
+
+
 
 ```{r}
 
@@ -69,7 +85,11 @@ x + a
 
 ```
 
+
+
 Vamos aplicar o que acabamos de aprender para criar uma calculadora de IMC.
+
+
 
 ```{r}
 
@@ -80,11 +100,15 @@ imc_daniel
 
 ```
 
+
+
 ### Trabalhando com vetores
 
 É possível fazer o IMC de vários grupos ao mesmo tempo? Sim, para isso, vamos trabalhar com vetores. O **vetor** é um conjunto unidimensional de objetos de um mesmo tipo.
 
 Traduzindo... imagina uma tabela de excel formada por várias colunas. Uma das colunas é a idade e está expressa em número. Pronto, um vetor é como se fosse uma coluna com valores de um mesmo tipo.
+
+
 
 ```{r}
 
@@ -96,7 +120,11 @@ imcs
 
 ```
 
+
+
 Vamos arrendondar usando duas casas decimais?
+
+
 
 ```{r}
 
@@ -105,9 +133,13 @@ imcs
 
 ```
 
+
+
 ### Trabalhando com matrizes
 
 As **matrizes** possuem uma estrutura tabular, com linhas e colunas. Porém, semelhante ao vetor, todos os objetos devem ser de um mesmo tipo (ex.: tudo número, tudo caracter).
+
+
 
 ```{r}
 
@@ -115,15 +147,21 @@ Matriz<-cbind(pesos,alturas,imcs)
 Matriz
 ```
 
+
+
 ### Trabalhando com dataframes
 
 O dataframe é um estrutura tabular semelhante à matriz. O maior diferencial dela é que você consegue armazenar valores de diferentes tipos (ex.: numérico, characteres, etc).
+
+
 
 ```{r}
 
 df <- as.data.frame(Matriz)
 df
 ```
+
+
 
 ## Leitura dos dados
 
@@ -151,6 +189,8 @@ Uma boa forma de você localizar onde está o arquivo é usando os três pontinh
 
 Dica de boa prática: copie o código gerado (marcado em vermelho acima), pois na próxima vez que rodar o script não precisa executar todo este passo a passo, basta executar o comando.
 
+
+
 ```{r}
 #| warning: false
 
@@ -168,11 +208,15 @@ GEM_APS <-
 
 ```
 
+
+
 ## Análise exploratória de dados
 
 Nesta seção vamos começar aplicar um conjunto de funções para conseguir adentrar no tratamento e análise exploratória de dados. Antes de começar, assegure que o tidyverse esteja instalado e também carregue o pacote.
 
 Vou carregar outros pacotes que vão ser úteis ao longo das análises.
+
+
 
 ```{r}
 #| warning: FALSE
@@ -193,11 +237,15 @@ library(rstatix)
 
 ```
 
+
+
 ### Função `glimpse`
 
 Glimpse em inglês significa "vislumbre", "olhada rápida", "olhadinha". Esta função ajuda a você conferir rapidamente alguns detalhes sobre o dataframe.
 
 Pelos resultados, é possível ver o número de linhas (1128), colunas (18), os tipos de variáveis e as primeiras observações.
+
+
 
 ```{r}
 
@@ -211,11 +259,15 @@ glimpse(GEM_APS)
 
 ```
 
+
+
 ### Função `select`
 
 Esta função permite você **selecionar apenas as variáveis** **(colunas) que são do seu interesse no dataframe**.
 
 No código abaixo, vamos selecionar apenas as variáveis com o nome do país, o ano e a variável *Total early-stage entrepreneurial activity* (TEA). Em sequência, vamos guardar o resultado da seleção em um novo objeto.
+
+
 
 ```{r}
 
@@ -231,6 +283,8 @@ GEM_APS_select |>
 
 ```
 
+
+
 | OBS.: O objeto `|>` se chama pipe. Ele é um elemento muito comum na estrutura do tidyverse. O que ele significa? Ele é artifício para encadear funções no R. Com o passar do seu uso ficará mais claro. O **atalho** para o pipe é **Ctrl + Shift + M**. Observação: em algumas versões, o pipe pode aparecer deste modo `%>%`.
 
 ### Função `filter`
@@ -239,6 +293,8 @@ Esta função serve para **filtrar apenas observações (linhas) de acordo com u
 
 Vamos supor que eu queira pegar apenas as observações do Brasil.
 
+
+
 ```{r}
 
 GEM_APS |> 
@@ -246,7 +302,11 @@ GEM_APS |>
 
 ```
 
+
+
 Vamos supor que eu queira pegar observações do Brasil ou Argentina. Para isso, vamos usar o conector ou (simbolizado por `|`). Vou aproveitar e colocar para ordenar pela coluna ano (year) usando a função `arrange`.
+
+
 
 ```{r}
 
@@ -258,9 +318,13 @@ GEM_APS |>
 
 ```
 
+
+
 | Viu como o pipe funciona? Eu fiz uma operação primeiro (filtro) e depois consegui encadear com outra função (arrange).
 
 Vamos supor que eu queira agora pegar os dados de Brasil e Argentina, mas eu queira pegar apenas observações 2010 adiante. Agora vamos ter que usar também o conector and', simbolizado por `&`.
+
+
 
 ```{r}
 
@@ -270,6 +334,8 @@ GEM_APS |>
 
 ```
 
+
+
 ### Função `mutate`
 
 A função `mutate` é útil para a criação de variáveis. Vamos fazer um exercício com a variável `female_male_TEA`, multiplicando-a por 100 para deixar na lógica percentual.
@@ -278,6 +344,8 @@ A função `mutate` é útil para a criação de variáveis. Vamos fazer um exer
 
 Mas se notar, esta variável está como char (qualitativo), mas tem que estar como numérico. Veja a seguir.
 
+
+
 ```{r}
 
 # funcao class serve para verificar o tipo da variavel
@@ -285,7 +353,11 @@ Mas se notar, esta variável está como char (qualitativo), mas tem que estar co
 class(GEM_APS$female_male_TEA)
 ```
 
+
+
 Como converter?
+
+
 
 ```{r}
 
@@ -295,7 +367,11 @@ class(GEM_APS$female_male_TEA)
 
 ```
 
+
+
 Agora é possível usar a função `mutate`.
+
+
 
 ```{r}
 
@@ -305,11 +381,15 @@ GEM_APS |>
 
 ```
 
+
+
 ### Funções `group_by` e `summarise`
 
 As funções `group_by` e `summarise` são geralmente aplicadas em conjunto. A primeira realiza algum agrupamento e a segunda realiza uma sumarização dos dados.
 
 Para exemplificar, vamos pegar dados de 2023 para países da América do Sul e América do Norte. Já vimos como fazer isso usando a função `filter`.
+
+
 
 ```{r}
 
@@ -329,7 +409,11 @@ GEM23_americas
 
 ```
 
+
+
 O próximo passo é fazer um tratamento para criar uma variável nova que será usada para identificar se é país da América do Norte ou Sul. Para isso, vamos usar a função `mutate`.
+
+
 
 ```{r}
 
@@ -347,7 +431,11 @@ GEM23_americas
 
 ```
 
+
+
 Agora sim vamos aplicar o group_by e summarise. Vamos agrupar pelo hemisfério e verificar a media da variavel `female_male_TEA`.
+
+
 
 ```{r}
 
@@ -356,6 +444,8 @@ GEM23_americas |>
   summarise(media_fmt = mean(female_male_TEA))
 
 ```
+
+
 
 Nota-se, portanto, que há um maior equilíbrio que empreendedoras e empreendedores no hemisfério sul da américa.
 
@@ -368,6 +458,8 @@ Vamos ver um exemplo que preparei neste artigo.
 [![](imagens/print4.png){fig-align="center" width="411"}](https://regepe.org.br/regepe/article/view/2384)
 
 Vamos ler dois conjuntos de dados que preparei. Separei um recorte da base GEM APS para 2019 e uma base da Worldwide Governance Indicators (WGI).
+
+
 
 ```{r}
 #|warning: FALSE
@@ -387,7 +479,11 @@ wgi <- read_delim("~/GitHub/r_unicamp/02_dados/wgi.csv",
 
 ```
 
+
+
 Vamos olhar as estruturas das duas bases.
+
+
 
 ```{r}
 
@@ -400,9 +496,13 @@ glimpse(gem_aps19)
 glimpse(wgi)
 ```
 
+
+
 Note que as duas bases possuem variáveis equivalentes. Na base `wgi` a gente tem a variável `code` já a base `gem_aps19` tem a variável `abrev`.
 
 A partir disso, é possível fazer um join.
+
+
 
 ```{r}
 
@@ -413,6 +513,8 @@ gem_wgi <-
 
 gem_wgi
 ```
+
+
 
 O domínio de joins é algo que abre um mar de possibilidades, pois você pode conjugar bases de diferentes domínio. Inclusive, esta é a forma que mais acontece com o GEM, a exemplo dos seguintes estudos.
 
@@ -425,6 +527,8 @@ O domínio de joins é algo que abre um mar de possibilidades, pois você pode c
 ### Função `skimr`
 
 A função skim é do pacote `skimr`. A função `skim` é
+
+
 
 ```{r}
 #|warning: FALSE
@@ -442,9 +546,13 @@ gem_wgi |>
 
 ```
 
+
+
 ## Análise exploratória com apoio de visualização
 
 O R base contém várias funções de visualização, a exemplo desta abaixo.
+
+
 
 ```{r}
 
@@ -453,9 +561,13 @@ O R base contém várias funções de visualização, a exemplo desta abaixo.
 boxplot(gem_aps19$entrepreneurship_as_good_carrer_choice)
 ```
 
+
+
 No entanto, existe um pacote chamado ggplot2 que contém uma grande vantagem dele em relação ao R base e outros pacotes estatísticos: a ampla capacidade de customização de gráficos. Vamos usar o mesmo exemplo acima, mas explorando algumas possibilidades de customização.
 
 ### Boxplot
+
+
 
 ```{r}
 
@@ -465,7 +577,11 @@ gem_aps19 |>
 
 ```
 
+
+
 Vamos customizar os nomes do eixos e acrescentar um título.
+
+
 
 ```{r}
 
@@ -477,7 +593,11 @@ gem_aps19 |>
 
 ```
 
+
+
 Vamos acrescentar dois elementos interessantes. Primeiro, vamos desagregar estes boxplot por continentes usando o parâmetro `fill` e também vamos colocar um fundo branco no gráfico. Também vamos retirar os valores do eixo x e colocar um título ao eixo x.
+
+
 
 ```{r}
 
@@ -496,7 +616,11 @@ gem_aps19 |>
 
 ```
 
+
+
 Certo, e como salvar isso?
+
+
 
 ```{r}
 
@@ -532,6 +656,8 @@ ggsave(filename = "grafico1.jpeg",
 
 ```
 
+
+
 O ChatGPT é um ótimo aliado para visualização de dados. Pergunte para ele como aumentar as fontes dos eixos x e y.
 
 | Sugestão de PROMPT:
@@ -560,6 +686,8 @@ Agora eu quero criar um gráfico de linhas para verificar a evolução de determ
 
 Vamos acessar dados do GEM NES, que é a base do GEM que levanta informações contextual de cada país a partir de especialistas.
 
+
+
 ```{r}
 #| warning: false
 
@@ -575,7 +703,11 @@ GEM_NES <- read_excel("~/GitHub/r_unicamp/02_dados/GEM_NES.xlsx",
 
 ```
 
+
+
 Vamos filtrar as observações do Brasil e Chile.
+
+
 
 ```{r}
 
@@ -585,7 +717,11 @@ br_chile <- GEM_NES |>
 
 ```
 
+
+
 Vamos agora plotar os gráficos para evolução da variável `governamental_support_policies`. Vamos usar o argumento `color` colocando o nome da variável país para plotar linhas que distinguem as nações. Como o Chile começa a ter um monitoramento contínuo apenas a partir de 2005, vou filtrar as observações.
+
+
 
 ```{r}
 
@@ -598,7 +734,11 @@ br_chile |>
 
 ```
 
+
+
 Agora é só melhorar um pouco o gráfico. Vamos colocar títulos aos eixos, bem como aumentar um pouco a espessura da reta.
+
+
 
 ```{r}
 
@@ -618,9 +758,13 @@ br_chile |>
 
 ```
 
+
+
 ### Gráfico de colunas
 
 Vamos trabalhar com uma forma alternativa de visualização da mesma informação?
+
+
 
 ```{r}
 
@@ -647,6 +791,8 @@ br_chile |>
 
 ```
 
+
+
 A página a seguir contém exemplos da aplicação do ggplot2: <https://r-graph-gallery.com/ggplot2-package.html>
 
 ### Gráfico de dispersão
@@ -658,6 +804,8 @@ O gráfico de dispersão é usado para associar duas variáveis. No código abai
 -   Usando o `geom_smooth(method = 'lm')` conseguimos plotar uma linha que mostra a tendência de associação. O `se` é usado para tirar os intervalos de confiança ao redor da reta.
 
 -   Usando o `geom_text_repel()` conseguimos adicionar textos aos pontos para sinalizar os países;
+
+
 
 ```{r}
 
@@ -673,7 +821,11 @@ gem_wgi |>
 
 ```
 
+
+
 Vamos fazer só mais uma última adição: usar a função `facet_wrap()` para desagregar as visualizações por continente.
+
+
 
 ```{r}
 
@@ -691,11 +843,15 @@ gem_wgi |>
 
 ```
 
+
+
 ### Gráfico de diagrama de correlação
 
 A função `ggpairs()` do pacote `GGally` cria um diagrama de correlação de modo automatizado.
 
 Vamos selecionar apenas algumas variáveis para aplicar.
+
+
 
 ```{r}
 
@@ -707,9 +863,13 @@ gem_wgi |>
 
 ```
 
+
+
 ### Mapa
 
 O código abaixo apresenta como criar um mapa cloroplético.
+
+
 
 ```{r}
 
@@ -744,11 +904,15 @@ ggplot() +
 
 ```
 
+
+
 ## ANOVA
 
 ANOVA é um teste inferencial paramétrico para comparação de médias. A hipótese do teste é avaliar se média populacional de duas ou mais categorias são iguais.
 
 Vamos aplicar o teste para comparar o TEA por continent.
+
+
 
 ```{r}
 
@@ -764,6 +928,8 @@ modelo2 <- aov(formula = tea ~ continent,
 
 ```
 
+
+
 De acordo com os resultados, a média do TEA possui diferença significativa na população a p \< 0,05. Cerca de 52% da variância total pode ser explicada pela associação ao grupo.
 
 Todavia, por ser um teste paramétrico, a ANOVA possui alguns pressupostos que devem ser atendidos.
@@ -772,11 +938,15 @@ Todavia, por ser um teste paramétrico, a ANOVA possui alguns pressupostos que d
 
 O primeiro teste é da homogeneidade da variância. Vamos usar o teste de Levene para avaliar.
 
+
+
 ```{r}
 
 leveneTest(tea ~ continent, data = gem_wgi)
 
 ```
+
+
 
 Se o p-valor for menor que 0,05 significa que temos evidência para rejeitar a hipótese das variâncias. Neste caso, como p \> 0,05 assumimos que temos homogeneidade da variância. Logo, este pressuposto foi atendido.
 
@@ -785,6 +955,8 @@ Se o p-valor for menor que 0,05 significa que temos evidência para rejeitar a h
 Para testar a normalidade dos resíduos vamos usar o teste de Shapiro-Wilk. Neste teste, se p \< 0,05, rejeitamos a hipótese nula. Logo, a distribuição dos resíduos difere de uma distribuição normal.
 
 No nosso caso p\>0,05, logo, a distribuição não difere de uma distribuição normal. Logo, o pressuposto da normalidade é atendido.
+
+
 
 ```{r}
 
@@ -797,14 +969,22 @@ hist(resid(modelo2))
 
 ```
 
+
+
 Visualizando o histograma dos resíduos conseguimos perceber que de fato é uma distribuição que se assemelha a uma curva normal, né?
+
+
 
 ```{r}
 
 hist(resid(modelo))
 ```
 
+
+
 Vamos agora ver o quão diferente são cada par a par de grupos. A última coluna p_adj é o teste para comparação. Observa-se que aqueles cujo p \< 0,05 possuem diferenças significativas (America-Africa; Asia-America; Europa-America)
+
+
 
 ```{r}
 
@@ -812,3 +992,4 @@ TukeyHSD(modelo)
 
 
 ```
+
