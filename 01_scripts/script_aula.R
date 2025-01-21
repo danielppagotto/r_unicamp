@@ -1,5 +1,5 @@
 
-
+# ctrl + shift + r para criar uma secao
 # Carregando os pacotes ---------------------------------------------------
 
 library(tidyverse)
@@ -10,6 +10,10 @@ library(ggrepel)
 library(GGally)
 library(car)
 library(rstatix)
+library(summarytools)
+library(psych)
+library(gt)
+library(DataExplorer)
 
 
 # Leitura dos dados  ------------------------------------------------------
@@ -118,9 +122,35 @@ juncao_inner <-
   wgi |> 
   inner_join(gem_aps19,
              by = c("code"="abrev")) |> 
-  select(-economy, -year, -cod_pais, -code)
+  select(-year, -cod_pais, -code)
 
 juncao_left <- 
   wgi |> 
     left_join(gem_aps19,
               by = c("code"="abrev"))
+
+
+# analise descritiva ------------------------------------------------------
+
+juncao_inner |> 
+  select(economy, 
+         continent,  
+         entrepreneurship_as_good_carrer_choice,
+         tea,
+         rule_of_law,
+         regulatory_quality,
+         political_stability,
+         voice_accountability) |> 
+  skim()
+  
+# Usando o pacote psych e gt
+
+describe(juncao_inner) |> gt()
+
+# usando o pacote summarytools
+
+view(dfSummary(juncao_inner))
+
+# usando o pacote Dataexplorer
+
+DataExplorer::create_report(juncao_inner)
