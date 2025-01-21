@@ -21,6 +21,8 @@ library(DataExplorer)
 library(writexl)
 library(haven)
 library(plotly)
+library(sf)
+library(rnaturalearth)
 
 # esse comando serve para voce acessar informacoes sobre a funcao
 #?write_xlsx()
@@ -69,7 +71,11 @@ america_sul <- c("Brazil","Argentina","Chile",
 
 Gem_aps_america <- 
   GEM_APS |> 
-  filter(economy %in% america_sul)
+  filter(economy %in% america_sul) 
+
+GEM23_americas <- 
+  Gem_aps_america |> 
+  filter(year == 2023)
 
 ## filtrar brasil e argentina e valores abaixo de < 2020
 
@@ -315,6 +321,8 @@ grafico3 <-
   theme_minimal() + 
   facet_wrap(~continent)
 
+grafico3
+
 ggsave("03_outputs/grafico3.jpeg",grafico3,
        dpi = 500, height = 5, width = 8)
 
@@ -333,7 +341,31 @@ juncao_inner  |>
   ggcorr()
 
 
+# mapa cloroplético -------------------------------------------------------
 
+#geobr para baixar polígonos do Brasil
+
+america_sul <- ne_countries(scale = "medium",
+             continent = "South America",
+             returnclass = "sf")
+
+map_data <- america_sul |> 
+  inner_join(GEM23_americas,
+            by = c("sovereignt"="economy")) |> 
+  filter(tea != "NA")
+
+
+map_data |> 
+  ggplot() + 
+  geom_sf(data = america_sul, 
+          fill = "grey70", color = "black") +
+  geom_sf(aes(fill = tea)) +
+  scale_fill_gradient(low = "lightgreen", 
+                      high = "darkgreen", 
+                      name = "TEA") +
+  theme_minimal() +
+  ggtitle("Total early stage entrepreneurial activity", 
+          "Fonte: GEM (2023)")
 
 # extra: tidyplots - https://tidyplots.org/
 # https://jbengler.github.io/tidyplots/authors.html#citation
