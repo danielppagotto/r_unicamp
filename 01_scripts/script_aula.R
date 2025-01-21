@@ -2,6 +2,9 @@
 # ctrl + shift + r para criar uma secao
 # Carregando os pacotes ---------------------------------------------------
 
+# caso o pacote nao esteja instalado ainda, instale usando o comando
+# install.packages("tidyverse")
+
 library(tidyverse)
 library(ggplot2)
 library(readxl)
@@ -17,6 +20,7 @@ library(gt)
 library(DataExplorer)
 library(writexl)
 library(haven)
+library(plotly)
 
 # esse comando serve para voce acessar informacoes sobre a funcao
 #?write_xlsx()
@@ -185,7 +189,7 @@ haven::write_sav(juncao_inner,
 
 # histograma --------------------------------------------------------------
 
-hist(gem_aps19$entrepreneurship_as_good_carrer_choice)
+x <- hist(gem_aps19$entrepreneurship_as_good_carrer_choice)
 
 ggplot(data = gem_aps19,
        aes(x = entrepreneurship_as_good_carrer_choice)) +
@@ -249,7 +253,8 @@ br_chile <- GEM_NES |>
                 filter(economy == "Brazil" | economy == "Chile")
 
 
-br_chile |> 
+grafico2 <- 
+  br_chile |> 
   filter(year >= 2005) |> 
   rename(País = economy) |> 
   ggplot(aes(x = year,
@@ -266,6 +271,7 @@ br_chile |>
         axis.text.x = element_text(angle = 90,
                                    hjust = 1)) 
   
+plotly::ggplotly(grafico2)
 
 # grafico de colunas ------------------------------------------------------
 
@@ -296,6 +302,28 @@ br_chile |>
 
 # Gráfico de dispersão ----------------------------------------------------
 
+grafico3 <- 
+  juncao_inner |> 
+  ggplot(aes(x = political_stability,
+             y = entrepreneurship_as_good_carrer_choice)) +
+  geom_point(size = 2, aes(col = continent)) +
+  geom_text_repel(aes(label = economy),
+                  max.overlaps = 20) +
+  geom_smooth(method = "lm", se = FALSE) +
+  xlab("Estabilidade política") +
+  ylab("Empreendedorismo como boa opção de carreira") +
+  theme_minimal() + 
+  facet_wrap(~continent)
+
+ggsave("03_outputs/grafico3.jpeg",grafico3,
+       dpi = 500, height = 5, width = 8)
+
+
+
+# Gráfico de diagrama de correlação ---------------------------------------
+
+
+
 
 
 
@@ -303,3 +331,10 @@ br_chile |>
 
 # extra: tidyplots - https://tidyplots.org/
 # https://jbengler.github.io/tidyplots/authors.html#citation
+
+# onde aprender mais: 
+
+# Curso de R do LAPEI: https://www.youtube.com/playlist?list=PLANciT1coAsTqQoPo5-3be0Qq07eU6ePI
+# Datacamp: https://www.datacamp.com/
+
+
