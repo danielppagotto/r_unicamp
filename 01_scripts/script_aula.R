@@ -244,6 +244,8 @@ grafico <- gem_aps19 |>
             legend.title = element_text(size = 14),
             legend.text = element_text(size = 12))
 
+grafico
+
 ggsave("03_outputs/grafico1.svg", grafico, dpi = 300,
        height = 4, width = 5)
 
@@ -376,3 +378,27 @@ map_data |>
 # Datacamp: https://www.datacamp.com/
 
 
+# ANOVA -------------------------------------------------------------------
+
+juncao_inner |> 
+  group_by(continent) |> 
+  summarise(tea_medio = mean(tea))
+
+modelo <- anova_test(formula = tea ~ continent, 
+                     data = juncao_inner, 
+                     effect.size = "ges")
+modelo
+
+modelo2 <- aov(formula = tea ~ continent, 
+               data = juncao_inner)
+
+summary(modelo2)
+
+levene_test(tea ~ continent, data = juncao_inner)
+
+shapiro.test(resid(modelo2))
+
+hist(resid(modelo2))
+
+# post-hoc test - onde existe diferencas significativas nos pares de grupos
+TukeyHSD(modelo2)
